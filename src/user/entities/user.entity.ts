@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { Role } from 'src/enums/role.enum';
 
 export type UserDocument = HydratedDocument<User>;
@@ -33,6 +33,11 @@ export class User {
 
   @Prop()
   phone: string;
+
+
+  @Prop({ type: [Types.ObjectId], ref: 'Match', required: true })
+  ownMatchs: Types.ObjectId[]
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

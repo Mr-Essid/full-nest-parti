@@ -33,6 +33,21 @@ export class TerrainController {
     return this.terrainService.getMyTerrain(id);
   }
 
+
+  @Get('/statistics')
+  getStatisticsOfManagerToDay(@GetCurrentUser() user) {
+    return this.terrainService.getStatistics(user)
+  }
+
+
+  @Public()
+  @Get('/matchs/:terrainId')
+  getMatchsOfTerrain(@Param('terrainId') terrainId) {
+    return this.terrainService.getMatchsOfTerrain(terrainId)
+  }
+
+
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateTerrainDto: UpdateTerrainDto) {
   //   return this.terrainService.update(+id, updateTerrainDto);

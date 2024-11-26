@@ -6,14 +6,18 @@ export type MatchPlayerDocument = HydratedDocument<MatchPlayer>;
 
 @Schema({ timestamps: true })
 export class MatchPlayer {
-  @Prop({ ype: Boolean })
+  @Prop({ type: Boolean })
   isAccepted: boolean;
+
+  @Prop({ type: String })
+  teamAOrB: String;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Match', required: true })
   matchId: Match;
+
 }
 
 const MatchPlayerSchema = SchemaFactory.createForClass(MatchPlayer);

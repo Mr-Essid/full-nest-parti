@@ -31,6 +31,10 @@ export class Terrain {
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   managerId: Types.ObjectId;
+
+
+  @Prop({ type: [Types.ObjectId], ref: 'Match' })
+  matchsIn: Types.ObjectId[]
 }
 
 export const TerrainSchema = SchemaFactory.createForClass(Terrain);

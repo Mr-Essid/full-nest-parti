@@ -24,6 +24,11 @@ export class UserController {
   @Get()
   getCurrentUser(@GetCurrentUserId() sub: string) {
     return this.userService.currentUser(sub)
+  }
 
+
+  @Get('/matchs')
+  getOwnMatchs(@GetCurrentUserId() sub: string) {
+    return this.userService.getOwnMatchs(sub)
   }
 }

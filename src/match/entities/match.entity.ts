@@ -13,6 +13,10 @@ export class Match {
 
   @Prop({ type: Types.ObjectId, ref: 'Terrain', required: true })
   terrainId: Types.ObjectId;
+
+  @Prop({ type: [Types.ObjectId], ref: 'MatchPlayer', required: true })
+  playersOfMatch: Types.ObjectId[]
+
 }
 
 export const MatchSchema = SchemaFactory.createForClass(Match);

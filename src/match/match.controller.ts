@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { CreateMatchDto } from './dto/create-match.dto';
-import { GetCurrentUserId } from 'src/common/decorators';
+import { GetCurrentUserId, Public } from 'src/common/decorators';
 
 @Controller('match')
 export class MatchController {
-  constructor(private readonly matchService: MatchService) {}
+  constructor(private readonly matchService: MatchService) { }
 
   @Post()
   createMatch(
@@ -23,6 +23,7 @@ export class MatchController {
     return this.matchService.createMatch(id, createMatchDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.matchService.findAllMatches();
@@ -33,7 +34,7 @@ export class MatchController {
     return this.matchService.findMyMatches(id);
   }
 
-  // @Patch(':id')
+  // @Patch(':id') 
   // update(@Param('id') id: string, @Body() updateMatchDto: UpdateMatchDto) {
   //   return this.matchService.update(+id, updateMatchDto);
   // }

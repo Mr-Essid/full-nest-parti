@@ -4,11 +4,15 @@ import { UpdateTerrainDto } from './dto/update-terrain.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Terrain } from './entities/terrain.entity';
 import { Model } from 'mongoose';
+import { Match } from 'src/match/entities/match.entity';
+import { ModuleLinker } from 'vm';
+import path from 'path';
 
 @Injectable()
 export class TerrainService {
   constructor(
     @InjectModel(Terrain.name) private terrainModel: Model<Terrain>,
+    @InjectModel(Match.name) private matchModel: Model<Match>
   ) { }
 
   async create(createTerrainDto: CreateTerrainDto, user) {
@@ -33,12 +37,53 @@ export class TerrainService {
     });
   }
 
+
+  async getStatistics(user) {
+
+    if (user.role !== 'manager') {
+      throw new HttpException(
+        'Not Allowed to see statistics you dont have :)',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    console.log(user)
+    const terrain = await this.terrainModel.findOne({ managerId: user.sub })
+
+    if (terrain == null) {
+      return {
+        'countMatchs': 0,
+        'amount': 0,
+      }
+    }
+
+    const allMatchesCount = await this.matchModel.countDocuments({ terrainId: terrain.id })
+
+    return {
+      'countMatchs': allMatchesCount,
+      'amout': allMatchesCount * terrain.price,
+    }
+
+  }
+
   async findAll() {
     return await this.terrainModel.find();
   }
 
   async getMyTerrain(managerId: string) {
-    return await this.terrainModel.findOne({ managerId })
+    return await this.terrainModel.findOne({ managerId }).populate(
+      {
+        path: "matchsIn",
+        populate: {
+          path: "playersOfMatch"
+        }
+      },
+    );
+  }
+
+
+  async getMatchsOfTerrain(terrainId: string) {
+    return await this.terrainModel.findById(terrainId.trim(), { matchsIn: true }).populate({ path: "matchsIn" }).exec();
   }
 
   // update(id: number, updateTerrainDto: UpdateTerrainDto) {

@@ -21,7 +21,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly mailerService: MailerService,
     private readonly tokenService: TokenService,
-  ) {}
+  ) { }
 
   async otpSend(data): Promise<boolean> {
     const user = await this.userModel.findOne({ email: data.email });
@@ -121,16 +121,23 @@ export class AuthService {
       savedUser.email,
       savedUser.role,
     );
+
     await this.tokenService.updateRtHash(
       savedUser._id.toString(),
       tokens.refresh_token,
     );
 
-    await this.mailerService.sendMail({
-      to: savedUser.email,
-      subject: 'Account Created',
-      text: 'Your account has been created successfully',
-    });
+    try {
+      await this.mailerService.sendMail({
+        to: savedUser.email,
+        subject: 'Account Created',
+        text: 'Your account has been created successfully',
+      });
+      console.log("No Mail Errors")
+    } catch (e) {
+      console.log(e)
+      console.log("Problem in mail sending")
+    }
 
     return tokens;
   }
